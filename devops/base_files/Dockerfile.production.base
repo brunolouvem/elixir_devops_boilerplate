@@ -1,0 +1,19 @@
+FROM bitwalker/alpine-elixir:1.5.0
+
+LABEL maintainer="Bruno Louvem <btlouvem@gmail.com>"
+LABEL version="<#VERSION#>"
+
+<#ENV#>
+
+RUN apk update
+RUN apk --update upgrade
+RUN apk add build-base
+
+RUN /usr/local/bin/mix local.hex --force && \
+    /usr/local/bin/mix local.rebar --force
+
+ADD app.tar.gz /opt/app/
+
+WORKDIR /opt/app
+
+#/opt/app/release/bin/app foreground

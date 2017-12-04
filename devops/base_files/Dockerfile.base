@@ -1,0 +1,15 @@
+FROM bitwalker/alpine-elixir:1.5.0
+
+LABEL maintainer="Bruno Louvem <btlouvem@gmail.com>"
+LABEL version="<#VERSION#>"
+
+<#ENV#>
+
+RUN apk update
+RUN apk --update upgrade
+RUN apk add --update build-base bash curl
+
+RUN /usr/local/bin/mix local.hex --force && \
+    /usr/local/bin/mix local.rebar --force
+
+WORKDIR /opt/app

@@ -1,0 +1,37 @@
+version: "3"
+services:
+  postgres:
+    image: postgres:9.6.2
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_DB=test_db
+      - POSTGRESQL_PASSWORD=pass
+    ports:
+      - "5432:5432"
+    logging:
+      driver: syslog
+
+  erlang_elixir:
+    build: .
+    hostname: <#HOSTNAME#>
+    environment:
+      - DB_PORT=5432
+      - DATABASE_URL=postgres://user:pass@postgres/test_db
+    working_dir: /opt/app
+    env_file:
+      - ./variables.env
+    command: /bin/sh -c "
+      /usr/local/bin/mix deps.get;
+      /usr/local/bin/mix deps.update;
+      /usr/local/bin/mix deps.compile;
+      /bin/sh;"
+    volumes:
+      - <#PROJECT-PATH#>:/opt/app
+    ports:
+      - "4000:4000"
+      - "4001:4001"
+    links:
+      - postgres
+    logging:
+      driver: syslog
+    stdin_open: true
